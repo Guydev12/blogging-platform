@@ -1,0 +1,75 @@
+/* General Styles */
+body {
+  font-family: 'Georgia', serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Article Card */
+.article-card {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.article-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Article Title */
+.article-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Meta Information */
+.article-meta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.author {
+  font-weight: bold;
+  color: #000;
+}
+
+.date {
+  color: #999;
+}
+
+/* Article Content */
+.article-content {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Read More Button */
+.read-more {
+  font-size: 16px;
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+}
+
+/* No Articles */
+.no-articles {
+  font-size: 20px;
+  color: #999;
+  font-style: italic;
+}
+
+#editor {
+    min-height: 300px; /* Minimum height */
+    max-height: 500px; /* Optional: Maximum height */
+    height: 400px; /* Default height */
+    overflow-y: auto; /* Enables scrolling if content overflows */
+}
