@@ -68,8 +68,15 @@ body {
 }
 
 #editor {
-    min-height: 300px; /* Minimum height */
-    max-height: 500px; /* Optional: Maximum height */
-    height: 400px; /* Default height */
-    overflow-y: auto; /* Enables scrolling if content overflows */
+  min-height: 300px; /* Minimum height */
+  max-height: 500px; /* Optional: Maximum height */
+  height: 400px; /* Default height */
+  overflow-y: auto; /* Enables scrolling if content overflows */
+}
+
+.tag-name {
+  font-size: 14px; /* Adjust the font size as needed */
+  font-weight: bold; /* Optional: makes the text bold */
+  color: #043072; /* Adjust the color of the tag name */
+  margin: 0; /* Removes extra spacing around the text */
 }

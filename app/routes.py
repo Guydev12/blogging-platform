@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for
-from app.models import User, Article, Profile
+from app.models import User, Article, Profile,Tag
 from app import db,login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import current_user, login_required, logout_user, login_user
@@ -102,8 +102,26 @@ def create_article():
             flash('Content is required', 'danger')
             print('no Content')
             return redirect(url_for("main.create_article"))
+        # Get the tags
+        tags = request.form.get("tags").strip()
+        if not tags:
+          flash("Please enter a tag","danger")
+          return redirect(url_for('main.create_article'))
+        
+        list_of_tags = tags.split(' ')
+
         # Create the article
         article = Article(title=title, content=content, author_id=current_user.id)
+        # Add the tag in article
+        for tag_name in list_of_tags:
+          tag_name = tag_name.strip()
+          tag = Tag.query.filter_by(name=tag_name).first()
+
+          if not tag:
+            tag = Tag(name=tag_name)
+            db.session.add(tag)
+          article.tags.append(tag)
+
         # Add the created article to the database
         db.session.add(article)
         # Save it 
@@ -138,22 +156,54 @@ def edit_article(article_id):
   if not article:
     flash('no article found','danger')
     return redirect(url_for('main.edit_article'))
+
   if request.method == "POST":
     title = request.form.get("title")
     if not title:
       flash("title is required",'danger')
       return redirect(url_for('main.edit_article'))
+
     content = request.form.get('content')
     if not content:
       flash("content is required",'danger')
       return redirect(url_for('main.edit_article'))
+
+    # Get the tags
+    tags = request.form.get("tags").strip()
+    if not tags:
+      flash("Please enter at least one tag","danger")
+      return redirect(url_for('main.edit_article',article_id=article_id))
+    
+    list_of_tags = [tag.strip() for tag in tags.split() if tag.strip()]  # Clean and remove empty tags
+    current_tags = set([tag.name for tag in article.tags])  # Get existing tags of the article
+
+    # Remove tags that were removed in the form
+    for tag in article.tags[:]:
+      if tag.name not in list_of_tags:
+        article.tags.remove(tag)
+        db.session.delete(tag)  # Delete the tag from the database if it's no longer associated with the article
+
+   
+    # Add or update tags
+    for tag_name in list_of_tags:
+      if tag_name not in current_tags:
+        # Check if the tag exists in the database, if not, create a new one
+        tag = Tag.query.filter_by(name=tag_name).first()
+        if not tag:  # If no existing tag is found
+          tag = Tag(name=tag_name)  # Create new tag
+          db.session.add(tag)  # Add new tag to the session
+        article.tags.append(tag)  # Append the tag to the article
+        current_tags.add(tag_name)
+
     # Update the article details
     article.title = title
     article.content = content
     db.session.add(article)
     db.session.commit()
-    flash('Change have save','success')
+
+    flash('Changes have been saved','success')
     return redirect(f'/article/{article_id}')
+
   return render_template('article-form-update.html', article= article)
 # route to clear the session
 @main_routes.route('/logout')

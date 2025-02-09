@@ -1,31 +1,40 @@
-{% extends 'base.html'%}
-{% block content %}
-  <div class="container py-5">
-      <form action='/article/{{article.id}}/edit' method="post" class="card p-4">
+{% extends 'base.html'%} {% block content %}
+<div class="container py-5">
+  <form action="/article/{{article.id}}/edit" method="post" class="card p-4">
     <div class="mb-4 d-flex flex-column">
-          <label> Title </label>
-         <input class="form-contol" name = 'title' placeholder="title" value="{{article.title}}">
-    </div>       
+      <label> Title </label>
+      <input
+        class="form-contol"
+        name="title"
+        placeholder="title"
+        value="{{article.title}}"
+      />
+    </div>
     <div class="mb-4 d-flex flex-column">
-          <label> Content </label>
-             <div id="editor"></div>
-             <input 
-                type="hidden"
-                name="content" 
-                id="content">
-          </div>
-
-    <button type="submit" class="btn btn-primary"> save change</button>
+      <label> Content </label>
+      <div id="editor"></div>
+      <input type="hidden" name="content" id="content" />
+    </div>
+    <div class="mb-4 d-flex flex-column">
+      <lable>Tags</lable>
+      <input
+        type="text"
+        name="tags"
+        placeholder="e.g., Python, Flask, Web Development"
+        value="{%for tag in article.tags%} {{tag.name}} {%endfor%}"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">save change</button>
   </form>
-  </div>
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script>
-        var quill = new Quill('#editor', {
-            theme: 'snow'
-        });
-        quill.root.innerHTML = `{{ article.content | safe }}`
-        document.querySelector("form").onsubmit = function() {
-            document.querySelector("#content").value = quill.root.innerHTML;
-        };
-    </script>
+</div>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+  var quill = new Quill('#editor', {
+    theme: 'snow',
+  })
+  quill.root.innerHTML = `{{ article.content | safe }}`
+  document.querySelector('form').onsubmit = function () {
+    document.querySelector('#content').value = quill.root.innerHTML
+  }
+</script>
 {% endblock %}

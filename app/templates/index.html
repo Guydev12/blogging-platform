@@ -1,49 +1,60 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <div class="container mt-5">
-    {% if data %}
-      <div class="row">
-        {% for article in data %}
-          <div class="col-md-8 offset-md-2 mb-4">
-            <div class="article-card" data-id="{{ article.id | int }}">
-              <h1 class="article-title">{{ article.title }}</h1>
-              <p class="article-meta">
-                By <span class="author">{{ article.author.username }}</span> •
-                <span class="date">{{ article.created_at.strftime('%b %d, %Y') }}</span>
-              </p>
-              <p class="article-content">{{ article.content[:90] | safe}}{% if article.content | length > 90 %} ...{% endif %}</p>
-              {% if article.content | length > 90 %}
-                <a href="/article/{{ article.id }}" class="read-more">Read more →</a>
-              {% endif %}
-            </div>
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  {% if data %}
+  <div class="row">
+    {% for article in data %}
+    <div class="col-md-8 offset-md-2 mb-4">
+      <div class="article-card" data-id="{{ article.id | int }}">
+        <h1 class="article-title">{{ article.title }}</h1>
+        <p class="article-meta">
+          By <span class="author">{{ article.author.username }}</span> •
+          <span class="date"
+            >{{ article.created_at.strftime('%b %d, %Y') }}</span
+          >
+        </p>
+        <p class="article-content">
+          {{ article.content[:90] | safe}}{% if article.content | length > 90 %}
+          ...{% endif %}
+        </p>
+        <!-- Use a flex container to display tags horizontally -->
+        <div class="d-flex flex-wrap">
+          {% for tag in article.tags %}
+          <div class="tag-item tag-name mr-2 mb-2">
+            <p class="mb-0 mr-2">#{{ tag.name }}</p>
           </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
+        {% if article.content | length > 90 %}
+        <a href="/article/{{ article.id }}" class="read-more">Read more →</a>
+        {% endif %}
       </div>
-    {% else %}
-      <div class="text-center py-5">
-        <p class="no-articles">No articles have been published yet.</p>
-      </div>
-    {% endif %}
+    </div>
+    {% endfor %}
   </div>
+  {% else %}
+  <div class="text-center py-5">
+    <p class="no-articles">No articles have been published yet.</p>
+  </div>
+  {% endif %}
+</div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".article-card").forEach(card => {
-        card.addEventListener("click", function () {
-            let articleId = this.getAttribute("data-id");
-            console.log("Article ID récupéré :", articleId); // 🔍 Vérification
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.article-card').forEach((card) => {
+      card.addEventListener('click', function () {
+        let articleId = this.getAttribute('data-id')
+        console.log('Article ID récupéré :', articleId) // 🔍 Vérification
 
-            // Vérification pour s'assurer que l'ID est un nombre valide
-            if (!isNaN(articleId) && articleId.trim() !== "") {
-              //alert(articleId)
-                window.location.href = `/article/`.concat(articleId);
-            } else {
-                console.error("Erreur: ID invalide détecté !", articleId);
-            }
-        });
-      });
-    });
-  </script>
+        // Vérification pour s'assurer que l'ID est un nombre valide
+        if (!isNaN(articleId) && articleId.trim() !== '') {
+          //alert(articleId)
+          window.location.href = `/article/`.concat(articleId)
+        } else {
+          console.error('Erreur: ID invalide détecté !', articleId)
+        }
+      })
+    })
+  })
+</script>
 
 {% endblock %}
