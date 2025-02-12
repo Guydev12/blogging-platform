@@ -1,20 +1,28 @@
-{% extends 'base.html'%}
-{% block content %}
-  <div class="container py-5">
-    <h2>Welcome back!</h2>
-      <form action="{{ url_for('main.login') }}" method="post" class="card p-4">
+{% extends 'base.html'%} {% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold text-center">Welcome back!</h2>
+  <form action="{{ url_for('main.login') }}" method="post" class="card p-4">
     <div class="mb-4 d-flex flex-column">
-          <label> Username </label>
-         <input class="form-contol" name = 'username' placeholder="Enter your username">
+      <label> Username </label>
+      <input
+        class="form-contol"
+        name="username"
+        placeholder="Enter your username"
+      />
     </div>
 
-     <div class="mb-4 d-flex flex-column">
-          <label>Password</label>
-         <input class="form-contol" name = 'password' type="password" placeholder="Enter your password">
+    <div class="mb-4 d-flex flex-column">
+      <label>Password</label>
+      <input
+        class="form-contol"
+        name="password"
+        type="password"
+        placeholder="Enter your password"
+      />
     </div>
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn mb-4 btn-primary">Register</button>
     <p>Don't have an account? <a href="/register">Register</a></p>
   </form>
-  </div>
+</div>
 
 {% endblock %}

@@ -1,37 +1,47 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container mt-5">
-  {% if data %}
-  <div class="row">
-    {% for article in data %}
-    <div class="col-md-8 offset-md-2 mb-4">
-      <div class="article-card" data-id="{{ article.id | int }}">
-        <h1 class="article-title">{{ article.title }}</h1>
-        <p class="article-meta">
-          By <span class="author">{{ article.author.username }}</span> •
-          <span class="date"
-            >{{ article.created_at.strftime('%b %d, %Y') }}</span
-          >
-        </p>
-        <p class="article-content">
-          {{ article.content[:90] | safe}}{% if article.content | length > 90 %}
-          ...{% endif %}
-        </p>
-        <!-- Use a flex container to display tags horizontally -->
-        <div class="d-flex flex-wrap">
-          {% for tag in article.tags %}
-          <div class="tag-item tag-name mr-2 mb-2">
-            <p class="mb-0 mr-2">#{{ tag.name }}</p>
+  <div class="alert-container"></div>
+  <!-- Search blog by tag -->
+  <form action="/" class="mb-3 filter-contenair">
+    <input
+      type="text"
+      id="filter"
+      name="tags"
+      placeholder="e.g, #tag1 or tag2..."
+    />
+    <button type="submit">Filter</button>
+  </form>
+  <div class="resultContainer">
+    {% if articles %}
+    <div class="row">
+      {% for article in articles %}
+      <div class="col-md-8 offset-md-2 mb-4">
+        <div class="article-card" data-id="{{ article.id | int }}">
+          <h1 class="article-title">{{ article.title }}</h1>
+          <p class="article-meta">
+            By <span class="author">{{ article.author.username }}</span> •
+            <span class="date"
+              >{{ article.created_at.strftime('%b %d, %Y') }}</span
+            >
+          </p>
+          <p class="article-content">
+            {{ article.content[:90] | safe}}{% if article.content | length > 90
+            %} ...{% endif %}
+          </p>
+          <div class="d-flex flex-wrap">
+            {% for tag in article.tags %}
+            <div class="tag-item tag-name mr-2 mb-2">
+              <p class="mb-0 mr-2">#{{ tag.name }}</p>
+            </div>
+            {% endfor %}
           </div>
-          {% endfor %}
+          <a href="/article/{{ article.id }}" class="read-more">Read more →</a>
         </div>
-        {% if article.content | length > 90 %}
-        <a href="/article/{{ article.id }}" class="read-more">Read more →</a>
-        {% endif %}
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
+    {% else %}
   </div>
-  {% else %}
   <div class="text-center py-5">
     <p class="no-articles">No articles have been published yet.</p>
   </div>

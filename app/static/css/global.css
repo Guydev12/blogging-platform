@@ -80,3 +80,28 @@ body {
   color: #043072; /* Adjust the color of the tag name */
   margin: 0; /* Removes extra spacing around the text */
 }
+
+.filter-contenair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px;
+  border: 1px solid rgb(75, 74, 74);
+}
+#filter {
+  outline: 0;
+  border: none;
+  width: 100%;
+}
+
+button[type='submit'] {
+  border: none;
+  outline: none;
+  background-color: #245bad;
+  color: white;
+  padding: 4px;
+  width: 75px;
+}
+button[type='submit']:hover {
+  background-color: #1a73e8;
+}

@@ -19,8 +19,8 @@ class User(db.Model, UserMixin):
     articles = db.relationship('Article', backref='author', lazy=True)
     profile = db.relationship('Profile', backref='user', uselist=False)
 
-    def __repr__(self):
-        return f"<User {self.username} {self.email}>"
+    def to_dict(self):
+            return {"id": self.id, "username": self.username}
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)

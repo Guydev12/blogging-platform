@@ -1,5 +1,5 @@
-from flask import Blueprint, request, render_template, flash, redirect, url_for
-from app.models import User, Article, Profile,Tag
+from flask import Blueprint, request, render_template, flash, redirect, url_for,jsonify
+from app.models import User, Article, Profile,Tag,article_tag
 from app import db,login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import current_user, login_required, logout_user, login_user
@@ -10,13 +10,39 @@ main_routes = Blueprint('main', __name__)
 @login_manager.user_loader
 def load_user(user_id):
   return User.query.get(int(user_id))
-# Define the main route (index)
-@main_routes.route('/')
+
+
+# Home Route
+@main_routes.route("/")
 def index():
-    data = Article.query.order_by(Article.created_at.desc()).all()
-    print("Current User",current_user)
-    return render_template("index.html", data = data)
-    
+    tag = request.args.get("tags", "").strip()  # Get tags from query params
+    tags = [t for t in tag.split() if t]  # Ensure no empty strings
+
+    if not tags:  # If no valid tags, return all articles
+        articles = filter_articles()
+    else:
+        articles = filter_articles(tags)
+
+    return render_template("index.html", articles=articles)
+
+
+def filter_articles(tags=None):
+    query = Article.query.order_by(Article.created_at.desc())
+
+    if tags:
+        query = (
+            query.join(article_tag, Article.id == article_tag.c.article_id)
+            .join(Tag, article_tag.c.tag_id == Tag.id)
+            .filter(Tag.name.in_(tags))
+            .distinct()
+        )
+
+    return query.all()
+
+
+
+
+
 # Create the user handpoints
 @main_routes.route('/login',methods=["GET","POST"])
 def login():
