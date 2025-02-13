@@ -51,3 +51,33 @@ class Tag(db.Model):
         return f"<Tag {self.name}, {self.id} >"
 
 
+class Comment(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  text = db.Column(db.Text, nullable=False)
+  user_id = db.Column(
+     db.Integer,
+     db.ForeignKey('user.id'),
+     nullable= False
+    )
+  article_id = db.Column(
+     db.Integer,
+     db.ForeignKey('article.id'),
+     nullable = False
+    )
+  
+# relationship
+  user = db.relationship('User', backref='comments', lazy= True)
+  article = db.Relationship('Article', backref='comments',lazy=True)
+  
+  
+class Reply (db.Model):
+  id = db.Column(db.Integer, primary_key= True)
+  text = db.Column(db.Text, nullable= False)
+     
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable= False)
+     
+  comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable= False)
+     
+  user = db.relationship('User', backref='replies', lazy= True)
+  comment = db.relationship('Comment', backref= 'replies', lazy= True)
+    
