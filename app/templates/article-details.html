@@ -41,5 +41,22 @@
         </p>
       </div>
     </div>
+    <footer class="container py-3">
+      <h1>Comments</h1>
+      <div class="d-flex w-full justify-content-center flex-column align-items-center ">
+        
+        {% if not current_user.is_authenticated %}
+         <p>Login to Join the Comments</p>
+         <button class="btn btn-primary" onclick="window.location.href='/login'">Login</button>
+        {% else %}
+        <form>
+        <textarea rows="3" name="comment "placeholder="Comments ..."></textarea>
+        <div class="d-flex justify-content-end">
+          <button type="submit" >Send</button>
+        </div>
+        </form>
+        {% endif %}
+      </div>
+    </footer>
   {% endif %}
 {% endblock %}
