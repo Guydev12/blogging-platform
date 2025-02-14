@@ -109,10 +109,25 @@ button[type='submit']:hover {
 
 textarea {
     width: 100%;
-    height: 80px; /* Fixed height */
-    max-height: 200px; /* Maximum height before scrolling */
+    height: auto; /* Fixed height */
+    max-height: 200px;
+    min-height: 12px;/* Maximum height before scrolling */
     overflow-y: auto; /* Enables scrolling if text overflows */
     border: 1px solid #ccc;
     padding: 8px;
     font-size: 14px;
   }
+  
+.bton-danger{
+  background-color:  red;
+  width: 150px;
+  color: white;
+  padding: 12px;
+  outline: none;
+}
+
+.logo{
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+}

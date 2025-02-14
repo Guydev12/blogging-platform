@@ -9,13 +9,13 @@
             {%if current_user.id == article.author.id%}
             <div class="gap-4 d-flex flex-row align-items-center mx-2">
              <a href="/article/{{article.id}}/edit" class="btn btn-primary">
-               Edit
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
             </a>
-              <form action="/article/{{article.id}}" method="post">
-                 <button class="btn btn-danger">
-                      Delete
+
+                 <button onclick="window.location.href='/confirm-delete/{{ article.id }}'" class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
                  </button>
-              </form>
+            
               
 
             </div>
@@ -41,22 +41,47 @@
         </p>
       </div>
     </div>
-    <footer class="container py-3">
-      <h1>Comments</h1>
-      <div class="d-flex w-full justify-content-center flex-column align-items-center ">
-        
-        {% if not current_user.is_authenticated %}
-         <p>Login to Join the Comments</p>
-         <button class="btn btn-primary" onclick="window.location.href='/login'">Login</button>
-        {% else %}
-        <form>
-        <textarea rows="3" name="comment "placeholder="Comments ..."></textarea>
+    <!-- Comments Section -->
+    
+<footer class="container py-3">
+  <h1>Comments</h1>
+  <div class="d-flex w-full justify-content-center flex-column align-items-center border-bottom py-4">
+    
+    {% if not current_user.is_authenticated %}
+      <p>Login to Join the Comments</p>
+      <button class="btn btn-primary" onclick="window.location.href='/login'">Login</button>
+    {% else %}
+      <form action="/article/{{article.id}}" method="post">
+        <textarea rows="3" name="comment" placeholder="Comments ..."
+         class="textarea-custom"
+        ></textarea>
         <div class="d-flex justify-content-end">
-          <button type="submit" >Send</button>
+        <div class="d-flex justify-content-end">
+          <button type="submit">Send</button>
         </div>
-        </form>
-        {% endif %}
-      </div>
-    </footer>
+      </form>
+    {% endif %}
+  </div>
+
+  {% if comments %}
+    <div class="row">
+      {% for comment in comments %}
+        <div class="col-md-8 offset-md-2 mb-4">
+          <div class="article-card" data-id="{{ article.id | int }}">
+            <h4 class="article-title">{{comment.user.username}}</h4>
+            <p class="article-meta">
+              <span class="date">{{ comment.created_at.strftime('%b %d, %Y') }}</span>
+            </p>
+            <p class="article-content">{{ comment.text }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <p class="no-articles">No comments have been published yet.</p>
+    </div>
+  {% endif %}
+</footer>
   {% endif %}
 {% endblock %}

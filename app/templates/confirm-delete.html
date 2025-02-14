@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center my-5">
+    <h2>Are you sure you want to delete this article?</h2>
+    <p><strong class="text-danger">{{ article.title }}</strong> will be permanently deleted.</p>
+
+    <form method="POST" class="d-flex flex-row align-items-center justify-content-center  gap-4 m-4">
+        <button type="submit" name="confirmation" value="yes" class="btn bton-danger">Yes, Delete</button>
+        <button type="submit" name="confirmation" value="no" class="btn btn-secondary">Cancel</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for,jsonify
-from app.models import User, Article, Profile,Tag,article_tag
+from app.models import User, Article, Profile,Tag,article_tag, Comment
 from app import db,login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import current_user, login_required, logout_user, login_user
@@ -56,7 +56,7 @@ def login():
       flash("Username is required", "danger")
       return redirect(url_for('main.login'))
     if  len(password) < 8:
-      flash("password is required")
+      flash("password is required","danger")
       return redirect(url_for('main.login'))
     # Check if the user exist
     user = User.query.filter_by(username=username).first()
@@ -158,7 +158,6 @@ def create_article():
     return render_template('create-article.html')
     
 # View article details
-
 @main_routes.route('/article/<article_id>', methods= ["GET","POST"])
 def article_details(article_id):
   if not article_id:
@@ -170,11 +169,22 @@ def article_details(article_id):
     flash('No article found','dangee')
     return redirect(url_for('main.article-details'))
   if request.method == "POST":
-    db.session.delete(article)
+    # Get the comment
+    content = request.form.get("comment")
+    print('content',content)
+    if not content:
+      flash('Comment is required','danger')
+      return redirect(url_for('main.article_details', article_id=article_id))
+    # Create the Comment
+    comment= Comment(text= content, user_id=current_user.id, article_id=article.id)
+    db.session.add(comment)
     db.session.commit()
-    flash('Article with id {} was removed'.format(article.id),'success')
-    return redirect('/')
-  return render_template('article-details.html', article=article)
+    flash('You have a new comment')
+    return redirect(url_for('main.article_details', article_id=article_id))
+  return render_template('article-details.html', article=article ,comments= article.comments)
+  
+  
+  
 # Edit article 
 @main_routes.route('/article/<article_id>/edit',methods=["GET","POST"])
 def edit_article(article_id):
@@ -231,6 +241,27 @@ def edit_article(article_id):
     return redirect(f'/article/{article_id}')
 
   return render_template('article-form-update.html', article= article)
+  
+  
+@main_routes.route('/confirm-delete/<int:article_id>', methods=["POST", "GET"])
+def confirm_delete(article_id):
+    article = Article.query.get_or_404(article_id)
+
+    if request.method == "POST":
+        confirmation = request.form.get("confirmation")  # Fix: Use form data
+
+        if confirmation == "no":
+            return redirect(url_for('main.article_details', article_id=article_id))
+
+        # Proceed with deletion
+        db.session.delete(article)
+        db.session.commit()
+        flash(f'Article "{article.title}" was removed', 'success')
+        return redirect(url_for('main.index'))  # Redirect to homepage
+
+    return render_template('confirm-delete.html', article=article)
+
+    
 # route to clear the session
 @main_routes.route('/logout')
 @login_required
